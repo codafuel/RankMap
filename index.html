@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>RankMap - Focus Fuel Planner</title>
+      <meta name="theme-color" content="#003f6b">
+<link rel="manifest" href="manifest.json">
+
+
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
+<meta name="theme-color" content="#003f6b">
+
+
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,400&display=swap" rel="stylesheet">
+      
+<style>
+   body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin:0;
+      padding:0;
+ 
+   		 }
+   		
+   		 .header{
+   		    background: linear-gradient(to right, #061e4e, #061e4ec8, #0032557e);   		        		        		          
+         color: #333;
+         text-align: center;
+         
+   		      }
+   		 
+
+.header h1 {  
+  color: #d5dfff;
+  padding: 50px;
+}
+
+
+.container {
+  margin: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  
+}
+
+
+
+<!--   .motivation {
+  margin: 20px;
+  padding: 20px;
+  background: #b4b4c4a4;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+    color: #001f3e;
+    text-align: center;
+}  -->
+
+.motivation {
+  margin: 20px;
+  padding: 30px 20px;
+  background: linear-gradient(to right, #cfd9df, #e2ebf0);
+  border-left: 6px solid #003276;
+  border-radius: 15px;
+  font-style: italic;
+  font-size: 1.4em;
+  font-weight: 500;
+  color: #002244;
+  box-shadow: 2px 2px 15px rgba(0, 0, 50, 0.1);
+  text-align: center;
+  position: relative;
+  font-family: 'Merriweather', serif;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.motivation::before,
+.motivation::after {
+  content: '"';
+  font-size: 2em;
+  color: #005792;
+  position: absolute;
+}
+
+.motivation::before {
+  top: -10px;
+  left: 10px;
+}
+
+.motivation::after {
+  bottom: -10px;
+  right: 10px;
+}
+
+input[type="text"], input[type="number"], input[type="time"], select {
+  width: 80%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+}
+
+  button {
+  
+  padding: 10px 20px;
+  border: none;
+  background-color: #005792;
+  color: white;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  margin-top: 10px;
+  
+}
+
+button:hover {
+  background-color: #003f6b;
+}  
+
+.task-item {
+  text-align: left;
+  padding: 8px;
+  margin: 5px 0;
+  font-size: 1.2em;
+  overflow:scroll;
+  background: #00488e3b;
+  border-radius: 10px;
+}
+
+.task-item.done span {
+  text-decoration: line-through;
+  color: green;
+}
+.tasklist{
+    background: #00488e1a;
+    padding: 10px;
+    margin: 20px auto 10px auto ;
+    border-radius: 10px;
+    min-height:50px;
+}
+
+
+
+#timerModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+#timerContent {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
+}
+.taskCount{
+    margin: 20px;
+    padding: 20px;
+    font-size:20px;
+    
+  
+}
+
+#doneCount{
+    font-size:40px;
+    background: #07365528;
+    margin: 10px;
+    padding: 20px;
+    border-radius: 5px;
+    color:#003276 ;
+}
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  top: -20px;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.motivation {
+  animation: fadeInUp 1s ease-in-out;
+}
+    
+</style>      
+      
+</head>
+<body>
+  
+      <div class="header">  
+      <h1>📘 RankMap - Your Daily Planner</h1>      
+      </div>
+      
+      <div class="motivation">
+          <h4 id="motivation"></h4>
+      </div>
+   <!-- new design -->
+   
+   <div class=" container">
+       <h2 >✍️ Add Your Task...</h2>
+        <input type="text" id="taskInput" placeholder="Eg : Physics Revision - 2 hours">
+  <button onclick="addTask()">➕ Add Task</button>
+      <section class="tasklist">
+    <div id="taskList"> </div>
+    </section>
+   </div>
+   <section class="tech">
+     <div class="container" id="techniques">
+     <h2> 📚 Select your Study Technique </h2>
+     
+   <select id="technique" onchange="showTimerOptions()">
+      <option>Select</option>
+      <option value="pomodoro">🍅 Pomodoro Technique</option>
+      <option value="slot">⏳ Slot-Based Study</option>
+  </select> 
+  
+  <div id="timerOptions"></div>
+  
+  </div> 
+  
+     <div id="timerModal">
+    <div id="timerContent">
+      <h2 id="timerTitle">Timer Running</h2>
+      <p id="timerDisplay" style="font-size:2rem;"></p>
+      <button onclick="closeTimer()">❌ Stop</button>
+    </div>
+  </div>
+  
+  <audio id="beepSound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+  
+   <div class="container" id="techniques">
+       <h2> 👨‍🏫 Learn about Different Techniques</h2>
+       <p </p>
+       
+   </div>
+   
+  </section>
+   
+   
+   
+   <div class="container">
+       <h2> ✅ Progress... </h2>
+       <p class="taskCount"><strong>Completed Tasks:</strong> <span id="doneCount">0</span></p>
+       
+   </div>
+   
+   <footer style=text-align:center;>
+      <p> ©RankMap - A planar designed by Focus Fuel | All right Reserved 2025-26</p>
+   </footer>
+   
+   <!-- new design end  -->
+   
+
+  <script>
+    const quotes = [
+      "Stay focused. One day or Day one, you decide.",
+      "Consistency > Motivation.",
+      "A little progress each day adds up to big results.",
+      "Push yourself, because no one else is going to do it for you."
+    ];
+    document.getElementById("motivation").innerText = quotes[Math.floor(Math.random() * quotes.length)];
+
+    let taskCount = 0;
+    let countdownInterval;
+
+    function addTask() {
+      const taskText = document.getElementById("taskInput").value;
+      if (taskText.trim() === '') return;
+      const div = document.createElement("div");
+      div.className = "task-item";
+      div.innerHTML = `<input type='checkbox' onclick='updateProgress(this, this.parentElement)'> <span>${taskText}</span>`;
+      document.getElementById("taskList").appendChild(div);
+      document.getElementById("taskInput").value = '';
+    }
+
+    function updateProgress(box, parent) {
+      if (box.checked) {
+        taskCount++;
+        parent.classList.add("done");
+        celebrate();
+      } else {
+        taskCount--;
+        parent.classList.remove("done");
+      }
+      document.getElementById("doneCount").innerText = taskCount;
+    }
+
+    function showTimerOptions() {
+      const technique = document.getElementById("technique").value;
+      const timerDiv = document.getElementById("timerOptions");
+      timerDiv.innerHTML = '';
+
+      if (technique === "pomodoro") {
+        timerDiv.innerHTML = `
+          <select id='pomoSet'>
+            <option value='25-5'>25 min study - 5 min break</option>
+            <option value='60-10'>60 min study - 10 min break</option>
+          </select>
+          <button onclick='startPomodoro()'>🚀 Start</button>
+        `;
+      } else if (technique === "slot") {
+        timerDiv.innerHTML = `
+          <input type='number' id='slotDur' placeholder='⏱️ Duration in minutes'>
+          <button onclick='startSlot()'>🎯 Start Slot</button>
+        `;
+      }
+    }
+
+    function startCountdown(minutes, title) {
+      const modal = document.getElementById("timerModal");
+      const display = document.getElementById("timerDisplay");
+      const header = document.getElementById("timerTitle");
+      let totalSeconds = minutes * 60;
+      modal.style.display = "flex";
+      header.innerText = title;
+
+      function updateTimer() {
+        
+        let mins = Math.floor(totalSeconds / 60);
+        let secs = totalSeconds % 60;
+        display.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        totalSeconds--;
+        if (totalSeconds < 0) {
+          clearInterval(countdownInterval);
+          display.innerText = "⏰ Time's up!";
+          celebrate();
+          beep();
+        }
+      }
+
+      updateTimer();
+      countdownInterval = setInterval(updateTimer, 1000);
+    }
+
+    function closeTimer() {
+      document.getElementById("timerModal").style.display = "none";
+      clearInterval(countdownInterval);
+    }
+
+    function startPomodoro() {
+      const value = document.getElementById("pomoSet").value;
+      const [study, rest] = value.split("-");
+      startCountdown(parseInt(study), `🧠 Study Time - ${study} mins`);
+      setTimeout(() => {
+        startCountdown(parseInt(rest), `☕ Break Time - ${rest} mins`);
+      }, parseInt(study) * 60000);
+    }
+
+    function startSlot() {
+      const dur = document.getElementById("slotDur").value;
+      if (!dur || dur < 1) {
+        alert("Please enter a valid duration.");
+        return;
+      }
+      startCountdown(parseInt(dur), `🎯 Slot Timer - ${dur} mins`);
+    }
+
+    function celebrate() {
+      for (let i = 0; i < 30; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti";
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+        piece.style.animationDuration = 2 + Math.random() * 2 + "s";
+        piece.style.top = '-20px';
+        piece.style.position = 'fixed';
+        piece.style.zIndex = 9999;
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 4000);
+      }
+    }
+
+    function beep() {
+      const beep = document.getElementById("beepSound");
+      beep.play();
+    }
+    
+    
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Service Worker Registered ✅'));
+  }
+
+  </script>
+</body>
+</html>
