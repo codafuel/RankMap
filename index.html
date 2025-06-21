@@ -202,8 +202,9 @@ button:hover {
   animation: fall linear infinite;
 }
 
-.tips-section {
-  margin: 40px 20px;
+
+/*.tips-section {
+  margin: 0px;
   padding: 20px;
   background: #f3f6fa;
   border-radius: 20px;
@@ -213,8 +214,8 @@ button:hover {
   text-align: center;
   color: #003276;
   margin-bottom: 20px;
-}
-
+} */
+    
 .card-scroll-container {
   display: flex;
   overflow-x: auto;
@@ -316,6 +317,29 @@ font-family: 'Open Sans', sans-serif;
 .motivation {
   animation: fadeInUp 1s ease-in-out;
 }
+
+    .task-date {
+  font-size: 1em;
+  font-family:poppins;
+  color: #003276;
+  background-color: #eef4ff;
+  padding: 5px 15px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 5px;
+  font-weight: ;
+  box-shadow: 0 2px 8px rgba(0, 50, 118, 0.08);
+}
+.datetime-box {
+  text-align: center;
+  padding: 10px;
+  background: #f2f8ff;
+  color: #003276;
+  font-weight: 500;
+  font-size: 1.1em;
+  border-top: 1px solid #cddff5;
+  font-family: 'Poppins', sans-serif;
+}
     
 </style>      
       
@@ -334,6 +358,8 @@ font-family: 'Open Sans', sans-serif;
    <!-- new design -->
    
    <div class=" container">
+       <div class="task-date" id="taskDate"></div>
+       
        <h2 >✍️ Add Your Task...</h2>
         <input type="text" id="taskInput" placeholder="Eg : Physics Revision - 2 hours">
   <button onclick="addTask()">➕ Add Task</button>
@@ -378,10 +404,10 @@ font-family: 'Open Sans', sans-serif;
   
    <div class="container" id="techniques">
        <h2> 👨‍🏫 Learn about Different Techniques</h2>
-       <p </p>
+       <p> </p>
        
        <div class="tips-section">
-  <h2>🧠 Study Tips & Tricks</h2>
+<!---  <h2>🧠 Study Tips & Tricks</h2> --->
   <div class="card-scroll-container">
     
     <div class="tip-card">
@@ -430,10 +456,12 @@ font-family: 'Open Sans', sans-serif;
         <p style="font-family:poppins;"> 💬 💡 Welcome to Focus Fuel! Your daily spark of motivation, planning hacks, and mental clarity — crafted for students and aspirants chasing their goals with discipline and courage. 📍 What you’ll find here: <br>— Goal-setting & planning tips <br>— Daily execution ideas <br>— Motivation doses & mindset repair <br>— Comeback tips for dropouts & repeaters <br>⚠️ No spam. No distractions. Only progress. ✨ Fuel your focus. Win your dream. Exclusive for all aspirants like NEET, JEE, UPSC, CUET, Dropouts, School/College students – anyone who wants to focus and rise again</p>
         
  <button onclick="window.open('https://whatsapp.com/channel/0029VbArOnK47XeDQhWaYQ08', '_blank')" style="background:#25D366;font-family:poppins;display: block;margin: 20px auto;">📱 Join our WhatsApp Channel</button>
- 
-
+    
    </div>
-   
+
+    <div class="datetime-box">
+  <p id="liveDateTime">🕒 Loading time...</p>
+    </div>
    
    <footer style=text-align:center;>
       <p> ©RankMap - A planar designed by Focus Fuel | All right Reserved 2025-26</p> <p><a href="https://whatsapp.com/channel/0029VbArOnK47XeDQhWaYQ08">Join our Whatsapp Channel</a></p>
@@ -609,6 +637,21 @@ function clearTasks() {
       const beep = document.getElementById("beepSound");
       beep.play();
     }
+    function updateDateTime() {
+  const now = new Date();
+  const options = { 
+    weekday: 'short', year: 'numeric', month: 'short', 
+    day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit',
+    hour12: true 
+  };
+  const formatted = now.toLocaleString('en-US', options);
+  document.getElementById('liveDateTime').innerText = `${formatted}`;
+}
+
+setInterval(updateDateTime, 1000); // updates every second
+updateDateTime(); // initial call
+    
+    document.getElementById("taskDate").innerText = `Today: ${new Date().toLocaleDateString('en-GB')}`;
     
     
   if ('serviceWorker' in navigator) {
