@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mock Test Tracker - Motivational Theme</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+        body {
+      font-family: 'Poppins', sans-serif;
+      background: #fdf6f0;
+      color: #333;
+      padding: 20px;
+      margin: 0;
+    }
+    html {
+  scroll-behavior: smooth;}
+  
+    .container {
+      max-width: 900px;
+      margin: auto;      
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #ff6b6b;
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #ff6b6b;
+      color: white;
+    }
+    .actions button {
+      width: auto;
+      margin: 2px;
+    }
+    .chart-wrapper {
+      overflow-y: auto;
+      max-height: 300px;
+      border-radius: 5px;
+      border: 1px solid grey;
+      
+      
+    }
+    
+    /* Style the navigation menu */
+.navbar {
+  width: auto;
+  background-color: #ff6b6b;
+  overflow: scroll;
+}
+
+/* Navigation links */
+.navbar a {
+  float: left;
+  padding: 12px;
+  color: white;
+  text-decoration: none;
+  font-size: 17px;
+  width: 30%; /* Four equal-width links. If you have two links, use 50%, and 33.33% for three links, etc.. */
+  text-align: center; /* If you want the text to be centered */
+}
+
+/* Add a background color on mouse-over */
+.navbar a:hover {
+  background-color: #ce5656;
+}
+
+/* Style the current/active link */
+.navbar a.active {
+  background-color: #04AA6D;
+}
+
+/* Add responsiveness - on screens less than 500px, make the navigation links appear on top of each other, instead of next to each other */
+@media screen and (max-width: 350px) {
+  .navbar a {
+    float: none;
+    display: block;
+    width: 100%;
+    text-align: left; /* If you want the text to be left-aligned on small screens */
+  }
+}
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+      input, button {
+        font-size: 0.9em;
+      }
+      table {
+        font-size: 0.85em;
+      }
+    }  </style>
+</head>
+<body>
+ <!-- The navigation menu -->
+ <div class="container" style="border-radius:0; padding: 0px; margin-bottom:10px ;">
+<div class="navbar">
+  <a  href="#">Home</a>
+  <a class="active" href="#">Performance</a>
+  <a href="#lineChart">Graph</a>
+</div>
+</div>
+  <div class="container">
+    <h1>📘 RankMap Mock Tracker</h1>
+
+    <input id="testName" placeholder="Test Name (e.g. Mock 5)" />
+    <input id="testDate" type="date" />
+    <input id="totalMarks" type="number" placeholder="Total Marks (eg. 720)" />
+    <input id="attempted" type="number" placeholder="Total Attempted" />
+    <input id="correct" type="number" placeholder="Correct Answers" />
+    <button onclick="saveTest()">💾 Save Test</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Test</th><th>Date</th><th>Total</th><th>Accuracy</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="testTableBody"></tbody>
+    </table>
+
+    <button onclick="exportCSV()">📤 Export CSV</button>
+
+    
+
+    <div style="margin-top: 2rem;">
+      <canvas id="lineChart" height="150"></canvas>
+      <p id="performanceTip" style="font-weight:bold; color: #ff6b6b; text-align:center;"></p>
+    </div>
+    
+    </div>
+    
+    <!-- barchart -->
+  <div class="container" style="margin-top: 10px; border-radius: 50px;">
+    <div class="chart-wrapper"> <canvas id="barChart" height="50"></canvas> </div> 
+    </div>
+    <!-- bar chart end -->
+    
+  <script>
+    let tests = JSON.parse(localStorage.getItem('mockTestsLite')) || [];
+    let editIndex = null;
+
+    function saveTest() {
+      const t = {
+        testName: document.getElementById('testName').value,
+        date: document.getElementById('testDate').value,
+        total: +document.getElementById('totalMarks').value,
+        attempted: +document.getElementById('attempted').value,
+        correct: +document.getElementById('correct').value
+      };
+      t.accuracy = t.attempted ? `${Math.round((t.correct / t.attempted) * 100)}%` : "-";
+
+      if (editIndex !== null) {
+        tests[editIndex] = t;
+        editIndex = null;
+      } else {
+        tests.push(t);
+      }
+
+      localStorage.setItem('mockTestsLite', JSON.stringify(tests));
+      renderTable();
+      renderCharts();
+      clearForm();
+    }
+
+    function clearForm() {
+      document.querySelectorAll('input').forEach(i => i.value = '');
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('testTableBody');
+      tbody.innerHTML = '';
+      tests.forEach((t, i) => {
+        tbody.innerHTML += `
+          <tr>
+            <td data-label="Test">${t.testName}</td>
+            <td data-label="Date">${t.date}</td>
+            <td data-label="Total">${t.total}</td>
+            <td data-label="Accuracy">${t.accuracy}</td>
+             <td class="actions">
+              <button onclick="editTest(${i})">✏️</button>
+              <button onclick="deleteTest(${i})">🗑️</button>
+            </td>
+          </tr>`;
+          <!--  -->
+         
+          <!--  -->
+      });
+    }
+    function editTest(i) {
+      const t = tests[i];
+      testName.value = t.testName;
+      testDate.value = t.date;
+      
+      attempted.value = t.attempted;
+      correct.value = t.correct;
+      editIndex = i;
+    }
+
+    function deleteTest(i) {
+      tests.splice(i, 1);
+      localStorage.setItem('mockTests', JSON.stringify(tests));
+      renderTable();
+      renderCharts();
+    }
+    
+
+    function exportCSV() {
+      if (!tests.length) return alert('No tests to export!');
+      const headers = Object.keys(tests[0]).join(',');
+      const rows = tests.map(t => Object.values(t).join(',')).join('\n');
+      const blob = new Blob([headers + '\n' + rows], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'MockTests.csv';
+      a.click();
+    }
+
+    function renderCharts() {
+      const labels = tests.map(t => t.testName);
+      const data = tests.map(t => t.total);
+      const accuracy = tests.map(t => t.correct && t.attempted ? Math.round((t.correct / t.attempted) * 100) : 0);
+
+       if (window.barInstance) window.barInstance.destroy(); 
+      if (window.lineInstance) window.lineInstance.destroy();
+
+       const ctx1 = document.getElementById('barChart').getContext('2d');
+      window.barInstance = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Total Marks',
+            data: data,
+            backgroundColor: '#ff6b6b'
+          }]
+        },
+        options: { responsive: true, indexAxis: 'y' }
+      });  
+
+      const ctx2 = document.getElementById('lineChart').getContext('2d');
+      window.lineInstance = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Overall Performance',
+            data: data,
+            fill: false,
+            borderColor: '#ff6b6b',
+            tension: 0.2
+          }]
+        },
+        options: { responsive: true }
+      });
+
+      // Performance Tips
+      const len = data.length;
+      let tip = '';
+      if (len >= 2) {
+        const diff = data[len - 1] - data[len - 2];
+        if (diff > 0) tip = '📈 Great! Stay consistent and keep practicing!';
+        else if (diff < 0) tip = '📉 Oops! Revisit weak topics and revise daily.';
+        else tip = '➖ Stable... Try mock tests under exam pressure to push ahead.';
+      }
+      document.getElementById('performanceTip').innerText = tip;
+    }
+
+    renderTable();
+    renderCharts();
+  </script>
+</body>
+</html>
