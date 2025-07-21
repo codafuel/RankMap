@@ -123,7 +123,7 @@
  <!-- The navigation menu -->
  <div class="container" style="border-radius:0; padding: 0px; margin-bottom:10px ;">
 <div class="navbar">
-  <a  href="#">Home</a>
+  <a  href="index.html">Home</a>
   <a class="active" href="#">Performance</a>
   <a href="#lineChart">Graph</a>
 </div>
