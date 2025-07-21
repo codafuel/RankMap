@@ -340,7 +340,54 @@ font-family: 'Open Sans', sans-serif;
   border-top: 1px solid #cddff5;
   font-family: 'Poppins', sans-serif;
 }
-    
+        /* Style the navigation menu */
+.navbar {
+  width: auto;
+  background-color: #ff6b6b;
+  overflow: scroll;
+}
+
+/* Navigation links */
+.navbar a {
+  float: left;
+  padding: 12px;
+  color: white;
+  text-decoration: none;
+  font-size: 17px;
+  width: 30%; /* Four equal-width links. If you have two links, use 50%, and 33.33% for three links, etc.. */
+  text-align: center; /* If you want the text to be centered */
+}
+
+/* Add a background color on mouse-over */
+.navbar a:hover {
+  background-color: #ce5656;
+}
+
+/* Style the current/active link */
+.navbar a.active {
+  background-color: #04AA6D;
+}
+
+/* Add responsiveness - on screens less than 500px, make the navigation links appear on top of each other, instead of next to each other */
+@media screen and (max-width: 350px) {
+  .navbar a {
+    float: none;
+    display: block;
+    width: 100%;
+    text-align: left; /* If you want the text to be left-aligned on small screens */
+  }
+}
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+      input, button {
+        font-size: 0.9em;
+      }
+      table {
+        font-size: 0.85em;
+      }
+    }  
 </style>      
       
 </head>
